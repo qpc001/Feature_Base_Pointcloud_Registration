@@ -1,0 +1,23 @@
+<launch>
+
+    <arg name="project" default="feature_matching"/>
+    
+    <param name="use_sim_time" value="true" />
+    <!-- Parameters -->
+    <rosparam file="$(find feature_matching)/config/params.yaml" command="load" />
+
+    <!--- LOAM -->
+    <node pkg="$(arg project)" type="$(arg project)_imageProjection"     name="$(arg project)_imageProjection"      output="screen"     respawn="true">
+        <rosparam file="$(find feature_matching)/config/params.yaml" command="load" />
+    </node>
+
+
+    <node pkg="$(arg project)" type="$(arg project)_imuPreintegration"     name="$(arg project)_imuPreintegration"      output="screen"     respawn="true">
+        <rosparam file="$(find feature_matching)/config/params.yaml" command="load" />
+    </node>
+
+
+    <!--- Run Rviz-->
+    <include file="$(find feature_matching)/launch/include/module_rviz.launch" />
+
+</launch>
