@@ -236,7 +236,7 @@ public:
         // 把姿态转换成Lidar的姿态
         // extQRPY与extRot不一致，是因为，惯导输出的姿态是 车头朝北时，yaw=0, 实际上，在ENU坐标系，车头朝北，yaw=90度才对
         Eigen::Quaterniond q_from(imu_in.orientation.w, imu_in.orientation.x, imu_in.orientation.y, imu_in.orientation.z);
-        Eigen::Quaterniond q_final =q_from; //q_from * extQRPY;
+        Eigen::Quaterniond q_final =extQRPY * q_from;
         imu_out.orientation.x = q_final.x();
         imu_out.orientation.y = q_final.y();
         imu_out.orientation.z = q_final.z();

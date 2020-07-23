@@ -3,7 +3,7 @@
 
 
 #include "utility.h"
-#include "lio_sam/cloud_info.h"
+#include "feature_matching/cloud_info.h"
 
 struct smoothness_t{
     float value;
@@ -33,7 +33,7 @@ public:
 
     pcl::VoxelGrid<PointType> downSizeFilter;
 
-    lio_sam::cloud_info cloudInfo;
+    feature_matching::cloud_info cloudInfo;
     std_msgs::Header cloudHeader;
 
     std::vector<smoothness_t> cloudSmoothness;
@@ -48,11 +48,11 @@ public:
     FeatureExtraction()
     {
         // 订阅 自定义的点云msg: lio_sam/deskew/cloud_info
-        //subLaserCloudInfo = nh.subscribe<lio_sam::cloud_info>("lio_sam_custom/deskew/cloud_info", 100, &FeatureExtraction::laserCloudInfoHandler, this, ros::TransportHints().tcpNoDelay());
+        //subLaserCloudInfo = nh.subscribe<feature_matching::cloud_info>("lio_sam_custom/deskew/cloud_info", 100, &FeatureExtraction::laserCloudInfoHandler, this, ros::TransportHints().tcpNoDelay());
 
         // 发布
         // 提取的特征点云lio_sam/feature/cloud_info
-        pubLaserCloudInfo = nh.advertise<lio_sam::cloud_info> ("lio_sam_custom/feature/cloud_info", 100);
+        pubLaserCloudInfo = nh.advertise<feature_matching::cloud_info> ("lio_sam_custom/feature/cloud_info", 100);
         // 角点、平面点
         pubCornerPoints = nh.advertise<sensor_msgs::PointCloud2>("lio_sam_custom/feature/cloud_corner", 10);
         pubSurfacePoints = nh.advertise<sensor_msgs::PointCloud2>("lio_sam_custom/feature/cloud_surface", 10);
@@ -76,7 +76,7 @@ public:
         cloudLabel = new int[N_SCAN*Horizon_SCAN];
     }
 
-    void featureExtra(const lio_sam::cloud_info &cloud_info_){
+    void featureExtra(const feature_matching::cloud_info &cloud_info_){
         laserCloudInfoHandler(cloud_info_);
     }
 
@@ -85,7 +85,7 @@ public:
      * lio_sam/deskew/cloud_info 消息的回调函数
      * @param msgIn
      */
-    void laserCloudInfoHandler(const lio_sam::cloud_info& msgIn)
+    void laserCloudInfoHandler(const feature_matching::cloud_info& msgIn)
     {
         cloudInfo = msgIn; // new cloud info
         cloudHeader = msgIn.header; // new cloud header

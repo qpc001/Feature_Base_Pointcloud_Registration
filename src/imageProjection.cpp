@@ -1,5 +1,5 @@
 #include "utility.h"
-#include "lio_sam/cloud_info.h"
+#include "feature_matching/cloud_info.h"
 #include "featureExtraction.h"
 #include "mapOptmization.h"
 
@@ -71,7 +71,7 @@ private:
     float odomIncreY;
     float odomIncreZ;
 
-    lio_sam::cloud_info cloudInfo;
+    feature_matching::cloud_info cloudInfo;
     double timeScanCur;             //当前帧点云的扫描起始时间
     double timeScanNext;            //当前帧点云的扫描结束时间
     std_msgs::Header cloudHeader;
@@ -91,12 +91,12 @@ public:
 //        // IMU预积分（这耦合关系。。。）
         //subOdom       = nh.subscribe<nav_msgs::Odometry>(odomTopic, 2000, &ImageProjection::odometryHandler, this, ros::TransportHints().tcpNoDelay());
 //        // 原始点云
-        subLaserCloud = nh.subscribe<sensor_msgs::PointCloud2>(pointCloudTopic, 5, &ImageProjection::cloudHandler, this, ros::TransportHints().tcpNoDelay());
+        subLaserCloud = nh.subscribe<sensor_msgs::PointCloud2>(pointCloudTopic, 10, &ImageProjection::cloudHandler, this, ros::TransportHints().tcpNoDelay());
 
         // 发布
         //
         pubExtractedCloud = nh.advertise<sensor_msgs::PointCloud2> ("lio_sam_custom/deskew/cloud_deskewed", 1);
-        pubLaserCloudInfo = nh.advertise<lio_sam::cloud_info> ("lio_sam_custom/deskew/cloud_info", 10);
+        pubLaserCloudInfo = nh.advertise<feature_matching::cloud_info> ("lio_sam_custom/deskew/cloud_info", 10);
 
         allocateMemory();
         resetParameters();
@@ -208,9 +208,9 @@ public:
         static Eigen::Affine3f step = Eigen::Affine3f::Identity();
         static bool inited=false;
         if(!inited){
-            Eigen::Matrix3f R_init;
-            R_init<<0 , 1 , 0 , -1 , 0 , 0 , 0 , 0 ,1;
-            pose.rotate(R_init);
+            //Eigen::Matrix3f R_init;
+            //R_init<<0 , 1 , 0 , -1 , 0 , 0 , 0 , 0 ,1;
+            //pose.rotate(R_init);
             last_pose=pose;
             inited=true;
         }

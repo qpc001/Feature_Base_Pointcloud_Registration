@@ -85,7 +85,7 @@ public:
         // 原始IMU数据
         subImu      = nh.subscribe<sensor_msgs::Imu>  (imuTopic,                   2000, &IMUPreintegration::imuHandler,      this, ros::TransportHints().tcpNoDelay());
         // lio_sam/mapping/odometry 是由 mapOptimization节点发布的
-        subOdometry = nh.subscribe<nav_msgs::Odometry>("lio_sam_custom/mapping/odometry", 5,    &IMUPreintegration::odometryHandler, this, ros::TransportHints().tcpNoDelay());
+        subOdometry = nh.subscribe<nav_msgs::Odometry>("lio_sam_custom/mapping/odometry", 10,    &IMUPreintegration::odometryHandler, this, ros::TransportHints().tcpNoDelay());
 
         pubImuOdometry = nh.advertise<nav_msgs::Odometry> (odomTopic, 2000);            //imu预积分
         pubImuPath     = nh.advertise<nav_msgs::Path>     ("lio_sam_custom/imu/path", 1);

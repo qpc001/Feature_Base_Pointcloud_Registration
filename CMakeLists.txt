@@ -42,7 +42,7 @@ generate_messages(
 catkin_package(
   INCLUDE_DIRS include
   DEPENDS PCL GTSAM
-
+  LIBRARIES ${PROJECT_NAME}
   CATKIN_DEPENDS 
   std_msgs
   nav_msgs

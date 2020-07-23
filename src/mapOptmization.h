@@ -3,7 +3,7 @@
 
 
 #include "utility.h"
-#include "lio_sam/cloud_info.h"
+#include "feature_matching/cloud_info.h"
 #include "tic_toc.hpp"
 
 #include <gtsam/geometry/Rot3.h>
@@ -79,7 +79,7 @@ public:
     ros::Subscriber subGPS;
 
     std::deque<nav_msgs::Odometry> gpsQueue;
-    lio_sam::cloud_info cloudInfo;
+    feature_matching::cloud_info cloudInfo;
 
     vector<pcl::PointCloud<PointType>::Ptr> cornerCloudKeyFrames;
     vector<pcl::PointCloud<PointType>::Ptr> surfCloudKeyFrames;
@@ -170,7 +170,7 @@ public:
 
         // 订阅
         // 1. 提取特征的点云以及IMU积分估计位姿
-        subLaserCloudInfo = nh.subscribe<lio_sam::cloud_info>("lio_sam_custom/feature/cloud_info", 10, &mapOptimization::laserCloudInfoHandler, this, ros::TransportHints().tcpNoDelay());
+        subLaserCloudInfo = nh.subscribe<feature_matching::cloud_info>("lio_sam_custom/feature/cloud_info", 10, &mapOptimization::laserCloudInfoHandler, this, ros::TransportHints().tcpNoDelay());
         // 2. GPS
         //subGPS = nh.subscribe<nav_msgs::Odometry> (gpsTopic, 200, &mapOptimization::gpsHandler, this, ros::TransportHints().tcpNoDelay());
 
@@ -260,7 +260,7 @@ public:
         }
     }
 
-    void registration(const lio_sam::cloud_info& cloud_info_, Eigen::Affine3f& pose_guess_){
+    void registration(const feature_matching::cloud_info& cloud_info_, Eigen::Affine3f& pose_guess_){
         // extract time stamp
         // 取时间戳
         timeLaserInfoStamp = cloud_info_.header.stamp;
@@ -343,7 +343,7 @@ public:
     }
 
     // 点云回调
-    void laserCloudInfoHandler(const lio_sam::cloud_infoConstPtr& msgIn)
+    void laserCloudInfoHandler(const feature_matching::cloud_infoConstPtr& msgIn)
     {
         // extract time stamp
         // 取时间戳
@@ -806,7 +806,7 @@ public:
             // 记录该帧点云对应的Lidar姿态（在imageProjection模块中根据9轴IMU的数据得到的）
             transformTobeMapped[0] = cloudInfo.imuRollInit;
             transformTobeMapped[1] = cloudInfo.imuPitchInit;
-            transformTobeMapped[2] = /*cloudInfo.imuYawInit*/-M_PI/2;
+            transformTobeMapped[2] = cloudInfo.imuYawInit/*-M_PI/2*/;
 
             // 如果不使用IMU的朝向初始化
             if (!useImuHeadingInitialization)
